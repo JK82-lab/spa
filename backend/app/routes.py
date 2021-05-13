@@ -5,12 +5,17 @@ from app.models import Event
 
 from flask import request, jsonify
 
-@app.route('/add_event', methods=['POST'])
-def add_event():
-    in_data = request.data
-    new_event = json.loads(in_data)
-    return json.dumps(utils.event_validation(new_event))
 
+@app.route('/test', methods=['GET'])
+def test():
+    return "Message from flask"
+
+@app.route('/add event', methods=['POST'])
+def get_today_events():
+    today = json.loads(request.data)
+    today_in_epoch = utils.datetime_to_epoch(today['date'])
+    today_events = Event.objects(start_time__gte=today_in_epoch, end_time__lte=today_in_epoch + utils.DAY_LEN_EPOCH)
+    return json.dumps(today_events.to_json())
 @app.route('/get_today_events', methods=['POST'])
 def get_today_events():
     today = json.loads(request.data)
